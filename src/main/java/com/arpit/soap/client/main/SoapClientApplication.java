@@ -27,6 +27,8 @@ import com.arpit.soap.server.service.HelloWorld;
 import com.arpit.soap.server.service.HelloWorldResponse;
 import com.arpit.soap.server.service.ObjectFactory;
 
+import th.co.techsphere.www.integration.KoolServiceLocator;
+
 @SpringBootApplication
 @ComponentScan("com.arpit.soap.client.config")
 public class SoapClientApplication implements CommandLineRunner {
@@ -55,7 +57,8 @@ public class SoapClientApplication implements CommandLineRunner {
 		final JAXBElement<HelloWorldResponse> jaxbElement = (JAXBElement<HelloWorldResponse>) sendAndRecieve(helloWorld);
 		final HelloWorldResponse helloWorldResponse = jaxbElement.getValue();
 		System.out.println(helloWorldResponse.getReturn());
-		
+		KoolServiceLocator testKSL = new KoolServiceLocator();
+		System.out.println("<=============>");
 	}
 
 	private Object sendAndRecieve(HelloWorld seatMapRequestType) {
