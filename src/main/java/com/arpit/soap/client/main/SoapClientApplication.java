@@ -55,6 +55,7 @@ public class SoapClientApplication implements CommandLineRunner {
 		final JAXBElement<HelloWorldResponse> jaxbElement = (JAXBElement<HelloWorldResponse>) sendAndRecieve(helloWorld);
 		final HelloWorldResponse helloWorldResponse = jaxbElement.getValue();
 		System.out.println(helloWorldResponse.getReturn());
+		
 	}
 
 	private Object sendAndRecieve(HelloWorld seatMapRequestType) {
