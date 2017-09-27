@@ -34,6 +34,7 @@ import th.co.techsphere.www.integration.Document;
 import th.co.techsphere.www.integration.DocumentType;
 import th.co.techsphere.www.integration.Folder;
 import th.co.techsphere.www.integration.GroupDescription;
+import th.co.techsphere.www.integration.KksGetDocumentsByMetaData;
 import th.co.techsphere.www.integration.KoolServiceLocator;
 import th.co.techsphere.www.integration.KoolServiceSoap;
 import th.co.techsphere.www.integration.Relation;
@@ -72,6 +73,38 @@ public class SoapClientApplication implements CommandLineRunner {
 		System.out.println(helloWorldResponse.getReturn());
 		KoolServiceLocator testKSL = new KoolServiceLocator();
 		System.out.println("<=============>");
+		Document[] resDocument;
+		String rootFolderPath = "/KKP/Kool Export";
+		String docTypeName = "CollateralContract";
+		String metaData = "Product";
+		String metaDataValue = "300aaa";
+		Integer pageIndex = 0;
+		Integer pageSize = 20;
+		
+		KksGetDocumentsByMetaData kksGetDocumentsByMetaData = new KksGetDocumentsByMetaData();
+		kksGetDocumentsByMetaData.setUserName("kk_admin");
+		kksGetDocumentsByMetaData.setPassWord("password");
+		kksGetDocumentsByMetaData.setRootFolderPath(rootFolderPath);
+		kksGetDocumentsByMetaData.setDocTypeName(docTypeName);
+		kksGetDocumentsByMetaData.setMetaData(metaData);
+		kksGetDocumentsByMetaData.setMetaDataValue(metaDataValue);
+		kksGetDocumentsByMetaData.setPageIndex(pageIndex);
+		kksGetDocumentsByMetaData.setPageSize(pageSize);
+		resDocument = kksGetDocumentsByMetaData.getDocData();
+		logger.info("==>resDocument length = "+resDocument.length);
+		for (Document document : resDocument) {
+			System.out.println("getDocID = "+document.getDocID());
+			System.out.println("getDocumentType = "+document.getDocumentType());
+			System.out.println("getExtention = "+document.getExtention());
+			System.out.println("getFolderID = "+document.getFolderID());
+			System.out.println("getKKPath = "+document.getKKPath());
+			System.out.println("getModificationDate = "+document.getModificationDate());
+			System.out.println("getModifier = "+document.getModifier());
+			System.out.println("getName = "+document.getName());
+			System.out.println("getSize = "+document.getSize());
+			System.out.println("getVersion = "+document.getVersion());
+		}
+		System.out.println("<*************************>");
 		System.out.println("Old KoolServiceSoapAddress = "+testKSL.getKoolServiceSoapAddress());
 		KoolServiceSoap koolserviceSoap = testKSL.getKoolServiceSoap();
 		
@@ -90,13 +123,14 @@ public class SoapClientApplication implements CommandLineRunner {
 			logger.error("koolserviceSoap signin error : "+e);
 		}
 		
-		String rootFolderPath = "/KKP/Kool Export";
-		String docTypeName = "CollateralContract";
-		String metaData = "Product";
-		String metaDataValue = "300aaa";
-		Integer pageIndex = 0;
-		Integer pageSize = 10;
-		Document[] resDocument;
+		resDocument = null;
+		rootFolderPath = "/KKP/Kool Export";
+		docTypeName = "CollateralContract";
+		metaData = "Product";
+		metaDataValue = "300aaa";
+		pageIndex = 0;
+		pageSize = 10;
+		
 		if(chkLogin) {
 			try {
 				resDocument = koolserviceSoap.getDocumentsByMetaData(ticket, rootFolderPath, docTypeName, metaData, metaDataValue, pageIndex, pageSize);
