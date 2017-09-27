@@ -2,6 +2,8 @@ package com.arpit.soap.client.main;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.transform.Transformer;
@@ -9,6 +11,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +30,15 @@ import com.arpit.soap.server.service.HelloWorld;
 import com.arpit.soap.server.service.HelloWorldResponse;
 import com.arpit.soap.server.service.ObjectFactory;
 
+import th.co.techsphere.www.integration.Document;
+import th.co.techsphere.www.integration.DocumentType;
+import th.co.techsphere.www.integration.Folder;
+import th.co.techsphere.www.integration.GroupDescription;
 import th.co.techsphere.www.integration.KoolServiceLocator;
+import th.co.techsphere.www.integration.KoolServiceSoap;
+import th.co.techsphere.www.integration.Relation;
+import th.co.techsphere.www.integration.SearchResult;
+import th.co.techsphere.www.integration.Stream;
 
 @SpringBootApplication
 @ComponentScan("com.arpit.soap.client.config")
@@ -46,6 +57,8 @@ public class SoapClientApplication implements CommandLineRunner {
 	@Value("#{'${service.user.password}'}")
 	private String serviceUserPassword;
 
+	private static final Logger logger = Logger.getLogger(SoapClientApplication.class);
+	
 	public static void main(String[] args) {
 		SpringApplication.run(SoapClientApplication.class, args);
 		System.exit(0);
@@ -58,6 +71,71 @@ public class SoapClientApplication implements CommandLineRunner {
 		final HelloWorldResponse helloWorldResponse = jaxbElement.getValue();
 		System.out.println(helloWorldResponse.getReturn());
 		KoolServiceLocator testKSL = new KoolServiceLocator();
+		System.out.println("<=============>");
+		System.out.println("Old KoolServiceSoapAddress = "+testKSL.getKoolServiceSoapAddress());
+		KoolServiceSoap koolserviceSoap = testKSL.getKoolServiceSoap();
+		
+		String username = "kk_admin";
+		String password = "password";
+		String ticket = "";
+		Boolean chkLogin = false;
+		try {
+			ticket =  koolserviceSoap.signin(username, password);
+			chkLogin = true;
+			System.out.println("koolserviceSoap signin success.");
+			System.out.println("Get ticket = "+ticket);
+			logger.info("koolserviceSoap signin success.");
+		} catch (Exception e) {
+			System.out.println("koolserviceSoap signin error : "+e);
+			logger.error("koolserviceSoap signin error : "+e);
+		}
+		
+		String rootFolderPath = "/KKP/Kool Export";
+		String docTypeName = "CollateralContract";
+		String metaData = "Product";
+		String metaDataValue = "300aaa";
+		Integer pageIndex = 0;
+		Integer pageSize = 10;
+		Document[] resDocument;
+		if(chkLogin) {
+			try {
+				resDocument = koolserviceSoap.getDocumentsByMetaData(ticket, rootFolderPath, docTypeName, metaData, metaDataValue, pageIndex, pageSize);
+				logger.info("==>resDocument length = "+resDocument.length);
+				for (Document document : resDocument) {
+					System.out.println("getDocID = "+document.getDocID());
+					System.out.println("getDocumentType = "+document.getDocumentType());
+					System.out.println("getExtention = "+document.getExtention());
+					System.out.println("getFolderID = "+document.getFolderID());
+					System.out.println("getKKPath = "+document.getKKPath());
+					System.out.println("getModificationDate = "+document.getModificationDate());
+					System.out.println("getModifier = "+document.getModifier());
+					System.out.println("getName = "+document.getName());
+					System.out.println("getSize = "+document.getSize());
+					System.out.println("getVersion = "+document.getVersion());
+				}
+			} catch (Exception e) {
+				System.out.println("koolserviceSoap getDocumentsByMetaData error : "+e);
+				logger.error("koolserviceSoap getDocumentsByMetaData error : "+e);
+			}
+		} else {
+			System.out.println("koolserviceSoap signout error : user has't ticket");
+			logger.warn("koolserviceSoap signout error : user has't ticket");
+		}
+		
+		Boolean chkLogout = true;
+		if(chkLogin) {
+			try {
+				chkLogout = koolserviceSoap.signOut(ticket);
+				System.out.println("koolserviceSoap signout success.");
+			} catch (Exception e) {
+				System.out.println("koolserviceSoap signout error : "+e);
+				logger.error("koolserviceSoap signout error : "+e);
+			}
+		} else {
+			System.out.println("koolserviceSoap signout error : user has't ticket");
+			logger.warn("koolserviceSoap signout error : user has't ticket");
+		}
+		System.out.println("koolserviceSoap.signOut = "+chkLogout);
 		System.out.println("<=============>");
 	}
 
