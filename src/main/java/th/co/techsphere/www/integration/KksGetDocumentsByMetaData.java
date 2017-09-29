@@ -72,8 +72,10 @@ public class KksGetDocumentsByMetaData {
 					KoolServiceSoap koolserviceSoap;
 					koolserviceSoap = kslObj.getKoolServiceSoap();
 					try {
+						Document[] resDoc = koolserviceSoap.getDocumentsByMetaData(ticket, rootFolderPath, docTypeName, metaData, metaDataValue, pageIndex, pageSize); 
 						logger.info("Method getDocumentsByMetaData is success.");
-						return koolserviceSoap.getDocumentsByMetaData(ticket, rootFolderPath, docTypeName, metaData, metaDataValue, pageIndex, pageSize);
+						KksSignOut.signOut(ticket);
+						return resDoc; 
 					} catch (Exception e) {
 						logger.error("Method getDocumentsByMetaData() is error. : "+e);
 					}

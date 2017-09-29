@@ -66,13 +66,14 @@ public class SoapClientApplication implements CommandLineRunner {
 	}
 
 	public void run(String... args) throws Exception {
-		final HelloWorld helloWorld = createHelloWorldRequest();
-		@SuppressWarnings("unchecked")
-		final JAXBElement<HelloWorldResponse> jaxbElement = (JAXBElement<HelloWorldResponse>) sendAndRecieve(helloWorld);
-		final HelloWorldResponse helloWorldResponse = jaxbElement.getValue();
-		System.out.println(helloWorldResponse.getReturn());
-		KoolServiceLocator testKSL = new KoolServiceLocator();
-		System.out.println("<=============>");
+//		final HelloWorld helloWorld = createHelloWorldRequest();
+//		@SuppressWarnings("unchecked")
+//		final JAXBElement<HelloWorldResponse> jaxbElement = (JAXBElement<HelloWorldResponse>) sendAndRecieve(helloWorld);
+//		final HelloWorldResponse helloWorldResponse = jaxbElement.getValue();
+//		System.out.println(helloWorldResponse.getReturn());
+		
+		
+		System.out.println("<=======Example======>");
 		Document[] resDocument;
 		String rootFolderPath = "/KKP/Kool Export";
 		String docTypeName = "CollateralContract";
@@ -104,115 +105,49 @@ public class SoapClientApplication implements CommandLineRunner {
 			System.out.println("getSize = "+document.getSize());
 			System.out.println("getVersion = "+document.getVersion());
 		}
-		System.out.println("<*************************>");
-		System.out.println("Old KoolServiceSoapAddress = "+testKSL.getKoolServiceSoapAddress());
-		KoolServiceSoap koolserviceSoap = testKSL.getKoolServiceSoap();
-		
-		String username = "kk_admin";
-		String password = "password";
-		String ticket = "";
-		Boolean chkLogin = false;
-		try {
-			ticket =  koolserviceSoap.signin(username, password);
-			chkLogin = true;
-			System.out.println("koolserviceSoap signin success.");
-			System.out.println("Get ticket = "+ticket);
-			logger.info("koolserviceSoap signin success.");
-		} catch (Exception e) {
-			System.out.println("koolserviceSoap signin error : "+e);
-			logger.error("koolserviceSoap signin error : "+e);
-		}
-		
-		resDocument = null;
-		rootFolderPath = "/KKP/Kool Export";
-		docTypeName = "CollateralContract";
-		metaData = "Product";
-		metaDataValue = "300aaa";
-		pageIndex = 0;
-		pageSize = 10;
-		
-		if(chkLogin) {
-			try {
-				resDocument = koolserviceSoap.getDocumentsByMetaData(ticket, rootFolderPath, docTypeName, metaData, metaDataValue, pageIndex, pageSize);
-				logger.info("==>resDocument length = "+resDocument.length);
-				for (Document document : resDocument) {
-					System.out.println("getDocID = "+document.getDocID());
-					System.out.println("getDocumentType = "+document.getDocumentType());
-					System.out.println("getExtention = "+document.getExtention());
-					System.out.println("getFolderID = "+document.getFolderID());
-					System.out.println("getKKPath = "+document.getKKPath());
-					System.out.println("getModificationDate = "+document.getModificationDate());
-					System.out.println("getModifier = "+document.getModifier());
-					System.out.println("getName = "+document.getName());
-					System.out.println("getSize = "+document.getSize());
-					System.out.println("getVersion = "+document.getVersion());
-				}
-			} catch (Exception e) {
-				System.out.println("koolserviceSoap getDocumentsByMetaData error : "+e);
-				logger.error("koolserviceSoap getDocumentsByMetaData error : "+e);
-			}
-		} else {
-			System.out.println("koolserviceSoap signout error : user has't ticket");
-			logger.warn("koolserviceSoap signout error : user has't ticket");
-		}
-		
-		Boolean chkLogout = true;
-		if(chkLogin) {
-			try {
-				chkLogout = koolserviceSoap.signOut(ticket);
-				System.out.println("koolserviceSoap signout success.");
-			} catch (Exception e) {
-				System.out.println("koolserviceSoap signout error : "+e);
-				logger.error("koolserviceSoap signout error : "+e);
-			}
-		} else {
-			System.out.println("koolserviceSoap signout error : user has't ticket");
-			logger.warn("koolserviceSoap signout error : user has't ticket");
-		}
-		System.out.println("koolserviceSoap.signOut = "+chkLogout);
-		System.out.println("<=============>");
+		System.out.println("<----------------------------------->");
 	}
 
-	private Object sendAndRecieve(HelloWorld seatMapRequestType) {
-		return webServiceTemplate.marshalSendAndReceive(seatMapRequestType,
-				new WebServiceMessageCallback() {
-					public void doWithMessage(WebServiceMessage message)
-							throws IOException, TransformerException {
-						SoapMessage soapMessage = (SoapMessage) message;
-						soapMessage.setSoapAction(serviceSoapAction);
-						org.springframework.ws.soap.SoapHeader soapheader = soapMessage
-								.getSoapHeader();
-						final StringWriter out = new StringWriter();
-						webServiceTemplate.getMarshaller().marshal(
-								getHeader(serviceUserId, serviceUserPassword),
-								new StreamResult(out));
-						Transformer transformer = TransformerFactory
-								.newInstance().newTransformer();
-						transformer.transform(new StringSource(out.toString()),
-								soapheader.getResult());
-					}
-				});
-	}
-
-	private Object getHeader(final String userId, final String password) {
-		final https.aggarwalarpit_wordpress.ObjectFactory headerObjectFactory = new https.aggarwalarpit_wordpress.ObjectFactory();
-		final ApplicationCredentials applicationCredentials = new ApplicationCredentials();
-		applicationCredentials.setUserId(userId);
-		applicationCredentials.setPassword(password);
-		final JAXBElement<ApplicationCredentials> header = headerObjectFactory
-				.createApplicationCredentials(applicationCredentials);
-		return header;
-	}
-
-	private HelloWorld createHelloWorldRequest() {
-		final ObjectFactory objectFactory = new ObjectFactory();
-		final HelloWorld helloWorld = objectFactory.createHelloWorld();
-		helloWorld.setArg0("Arpit");
-		return helloWorld;
-	}
-
-	public void setWebServiceTemplate(final WebServiceTemplate template) {
-		this.webServiceTemplate = template;
-	}
+//	private Object sendAndRecieve(HelloWorld seatMapRequestType) {
+//		return webServiceTemplate.marshalSendAndReceive(seatMapRequestType,
+//				new WebServiceMessageCallback() {
+//					public void doWithMessage(WebServiceMessage message)
+//							throws IOException, TransformerException {
+//						SoapMessage soapMessage = (SoapMessage) message;
+//						soapMessage.setSoapAction(serviceSoapAction);
+//						org.springframework.ws.soap.SoapHeader soapheader = soapMessage
+//								.getSoapHeader();
+//						final StringWriter out = new StringWriter();
+//						webServiceTemplate.getMarshaller().marshal(
+//								getHeader(serviceUserId, serviceUserPassword),
+//								new StreamResult(out));
+//						Transformer transformer = TransformerFactory
+//								.newInstance().newTransformer();
+//						transformer.transform(new StringSource(out.toString()),
+//								soapheader.getResult());
+//					}
+//				});
+//	}
+//
+//	private Object getHeader(final String userId, final String password) {
+//		final https.aggarwalarpit_wordpress.ObjectFactory headerObjectFactory = new https.aggarwalarpit_wordpress.ObjectFactory();
+//		final ApplicationCredentials applicationCredentials = new ApplicationCredentials();
+//		applicationCredentials.setUserId(userId);
+//		applicationCredentials.setPassword(password);
+//		final JAXBElement<ApplicationCredentials> header = headerObjectFactory
+//				.createApplicationCredentials(applicationCredentials);
+//		return header;
+//	}
+//
+//	private HelloWorld createHelloWorldRequest() {
+//		final ObjectFactory objectFactory = new ObjectFactory();
+//		final HelloWorld helloWorld = objectFactory.createHelloWorld();
+//		helloWorld.setArg0("Arpit");
+//		return helloWorld;
+//	}
+//
+//	public void setWebServiceTemplate(final WebServiceTemplate template) {
+//		this.webServiceTemplate = template;
+//	}
 
 }

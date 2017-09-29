@@ -9,7 +9,7 @@ package th.co.techsphere.www.integration;
 
 public class KoolServiceLocator extends org.apache.axis.client.Service
 		implements th.co.techsphere.www.integration.KoolService {
-
+	
 	public KoolServiceLocator() {
 	}
 
@@ -24,6 +24,8 @@ public class KoolServiceLocator extends org.apache.axis.client.Service
 
 	// Use to get a proxy class for KoolServiceSoap
 	private java.lang.String KoolServiceSoap_address = "http://172.20.36.106:8907/KoolService.asmx";
+	
+//	private java.lang.String KoolServiceSoap_address;
 
 	public java.lang.String getKoolServiceSoapAddress() {
 		return KoolServiceSoap_address;

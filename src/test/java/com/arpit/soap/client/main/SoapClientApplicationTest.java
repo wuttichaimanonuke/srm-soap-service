@@ -24,11 +24,11 @@ public class SoapClientApplicationTest {
 	@Autowired
 	private WebServiceTemplate webServiceTemplate;
 
-	@Before
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		soapClientApplication.setWebServiceTemplate(webServiceTemplate);
-	}
+//	@Before
+//	public void setup() {
+//		MockitoAnnotations.initMocks(this);
+//		soapClientApplication.setWebServiceTemplate(webServiceTemplate);
+//	}
 
 	@Test
 	public void shouldGetResponseFromService() throws Exception {
